@@ -58,20 +58,24 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Prepare data object in the specified format
+        const data = {
+            name,
+            topic,
+            number: personalNumber,
+            email
+        };
+
         try {
-            // Send data to server
-            const response = await fetch('http://localhost:3000/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name,
-                    personalNumber,
-                    email,
-                    topic
-                })
-            });
+            // Send data to webhook
+            const response = await fetch(
+                "https://scorpin.app.n8n.cloud/webhook-test/edb3caf5-59b2-4570-a7cb-03dbf16f5208",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                }
+            );
 
             if (!response.ok) {
                 throw new Error('Failed to save data');
