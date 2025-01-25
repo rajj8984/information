@@ -1,50 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Information Form</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Information Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .form-container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-container h1 {
+      margin-bottom: 20px;
+    }
+    .form-container input,
+    .form-container button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-container button {
+      background: #007bff;
+      color: white;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+    .form-container button:hover {
+      background: #0056b3;
+    }
+    .submitted-data {
+      margin-top: 20px;
+      max-width: 400px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Information Form</h1>
-        <form id="infoForm">
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="personalNumber">Personal Number:</label>
-                <input type="text" id="personalNumber" name="personalNumber" required>
-            </div>
+  <div class="form-container">
+    <h1>Submit Information</h1>
+    <form id="infoForm">
+      <input type="text" id="name" placeholder="Enter your name" required />
+      <input type="text" id="topic" placeholder="Enter the topic" required />
+      <input type="text" id="number" placeholder="Enter your number" required />
+      <input type="email" id="email" placeholder="Enter your email" required />
+      <button type="submit">Submit</button>
+    </form>
+    <div class="submitted-data" id="submittedData"></div>
+  </div>
 
-            <div class="form-group">
-                <label for="topic">Topic:</label>
-                <select id="topic" name="topic" required>
-                    <option value="">Select a topic</option>
-                    <option value="General Inquiry">General Inquiry</option>
-                    <option value="Technical Support">Technical Support</option>
-                    <option value="Sales">Sales</option>
-                    <option value="Feedback">Feedback</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
+  <script>
+    const form = document.getElementById("infoForm");
+    const submittedDataDiv = document.getElementById("submittedData");
 
-            <div class="form-group" id="otherTopicGroup" style="display: none;">
-                <label for="otherTopic">Specify Other Topic:</label>
-                <input type="text" id="otherTopic" name="otherTopic">
-            </div>
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
+      const name = document.getElementById("name").value;
+      const topic = document.getElementById("topic").value;
+      const number = document.getElementById("number").value;
+      const email = document.getElementById("email").value;
 
-            <button type="submit" class="submit-btn">Submit</button>
-        </form>
-    </div>
-    <script src="script.js"></script>
+      const data = { name, topic, number, email };
+
+      try {
+        const response = await fetch(
+          "https://scorpin.app.n8n.cloud/webhook-test/edb3caf5-59b2-4570-a7cb-03dbf16f5208",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          }
+        );
+
+        if (response.ok) {
+          submittedDataDiv.innerHTML += `
+            <div>
+              <p><strong>Name:</strong> ${name}</p>
+              <p><strong>Topic:</strong> ${topic}</p>
+              <p><strong>Number:</strong> ${number}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <hr />
+            </div>
+          `;
+          form.reset();
+          alert("Data submitted successfully!");
+        } else {
+          alert("Failed to submit data.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("An error occurred while submitting the form.");
+      }
+    });
+  </script>
 </body>
 </html>
