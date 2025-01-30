@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Send data to webhook
             const response = await fetch(
-                "https://scorpin.app.n8n.cloud/webhook-test/workflowforaudio",
+                "https://scorpin.app.n8n.cloud/webhook-test/4b2f16fd-cdba-4b83-a63d-3778227c270b",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
