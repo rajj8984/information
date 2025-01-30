@@ -3,38 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Information Form</title>
+    <title>Contact Form</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Information Form</h1>
-        <form id="infoForm">
+        <form id="contactForm">
+            <h2>Contact Information</h2>
+            
+            <div id="successMessage" class="success-message" style="display: none;">
+                Your submission was done successfully!
+            </div>
+            
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required>
             </div>
-            
-            <div class="form-group">
-                <label for="personalNumber">Personal Number:</label>
-                <input type="text" id="personalNumber" name="personalNumber" required>
-            </div>
 
             <div class="form-group">
-                <label for="topic">Topic:</label>
-                <select id="topic" name="topic" required>
-                    <option value="">Select a topic</option>
-                    <option value="General Inquiry">General Inquiry</option>
-                    <option value="Technical Support">Technical Support</option>
-                    <option value="Sales">Sales</option>
-                    <option value="Feedback">Feedback</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="otherTopicGroup" style="display: none;">
-                <label for="otherTopic">Specify Other Topic:</label>
-                <input type="text" id="otherTopic" name="otherTopic">
+                <label for="number">Phone Number:</label>
+                <input type="tel" id="number" name="number" required>
             </div>
 
             <div class="form-group">
@@ -42,9 +30,52 @@
                 <input type="email" id="email" name="email" required>
             </div>
 
-            <button type="submit" class="submit-btn">Submit</button>
+            <div class="form-group">
+                <label for="question">Your Question:</label>
+                <textarea id="question" name="question" rows="4" required></textarea>
+            </div>
+
+            <button type="submit">Submit</button>
         </form>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                number: document.getElementById('number').value,
+                email: document.getElementById('email').value,
+                question: document.getElementById('question').value
+            };
+
+            try {
+                const response = await fetch('https://scorpin.app.n8n.cloud/webhook-test/workflowforaudio', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    mode: 'cors',
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('contactForm').reset();
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 5000);
+                } else {
+                    alert('Error submitting form. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error submitting form. Please try again.');
+            }
+        });
+    </script>
 </body>
-</html>
+</html> 
